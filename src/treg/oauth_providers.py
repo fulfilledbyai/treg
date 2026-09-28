@@ -1905,7 +1905,8 @@ HARMAR = OAuthProvider(
     auth_uri="", token_uri="", scopes={},
     client_id_setting="", client_secret_setting="",
     category="AI generation",
-    summary="Word-timed transcripts, SRT/VTT subtitles and styled captioned videos from any audio or video link.",
+    summary=("Captions for real speech: word-timed transcripts, SRT/VTT and styled captioned video in 59 "
+             "languages, including mixed-language speech such as Armenian/Russian/English."),
     base_url="https://api.harmar.ai",
     docs_url="https://harmar.ai/developers",
     probe_path="/v1/balance",  # free — a bad key gets a 401 invalid_api_key here

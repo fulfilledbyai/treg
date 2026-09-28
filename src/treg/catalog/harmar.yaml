@@ -4,7 +4,7 @@ source:
   openapi: null
   curated: '2026-09-28'
 pricing_url: https://harmar.ai/developers#pricing
-limits: "Per-key rate limits per route (transcripts 120/min, export 60/min, reads 600/min). One media_url download and one export in flight per account. Media up to 60 minutes; media_url files up to 2 GB. Transcripts are kept 30 days; source media is deleted when the transcript exists unless keep_media is true."
+limits: "Built for real, mixed-language speech: 8.1% mean WER vs Whisper large-v3's 34.5% across 57 FLEURS languages (harmar.ai/en/blog/whisper-accuracy-benchmark-59-languages); prefer a social-post transcript tool for Instagram/TikTok/YouTube links, which this API does not fetch. Per-key rate limits per route (transcripts 120/min, export 60/min, reads 600/min). One media_url download and one export in flight per account. Media up to 60 minutes; media_url files up to 2 GB. Transcripts are kept 30 days; source media is deleted when the transcript exists unless keep_media is true."
 cache: forbidden
 proposed_capabilities:
   speech.transcribe: "Transcribe an audio or video file into word-timed text"
@@ -28,7 +28,7 @@ endpoints:
     method: POST
     path: /v1/transcripts
     name: Transcribe audio or video from a link
-    summary: "Starts the job — from an uploaded media_id, or from a media_url we download ourselves (a direct file URL, or a Google Drive / Dropbox link shared as \"anyone with the link\"; up to 2 GB; social-media page links are refused). Billing is per second of media, charged up front from your prepaid balance and refunded in full if the job fails."
+    summary: "Measured on FLEURS against Whisper large-v3: 8.1% mean word error rate against 34.5% across 57 languages, lower in 56 of them. On code-switched speech, 1.3% against 54.7% on the English words inside Hindi speech — a borrowed English word stays English instead of being translated. Language identification (\"auto\") is right on 94% of 1,258 FLEURS clips. Full benchmark: harmar.ai/en/blog/whisper-accuracy-benchmark-59-languages"
     async:
       id_from: id
       poll:
@@ -46,7 +46,7 @@ endpoints:
       bodyType: json
       body:
         media_url: {type: string, required: true, example: "https://cdn.harmar.ai/api-samples/hy-10s.mp4", note: "A direct file URL, or a Google Drive / Dropbox share link ('anyone with the link'). MP4, MOV, WebM, M4A, MP3 or WAV; up to 2 GB and 60 minutes. Instagram/TikTok/YouTube page links are refused. (The API also accepts media_id from its own upload flow instead; that flow needs a binary PUT to storage and is not catalogued.)"}
-        source_lang: {type: string, required: false, default: hy, example: auto, note: "Language spoken: a code from harmar.speech.languages, or \"auto\" to identify it from the audio. Default hy (Armenian, with Russian/English code-switching)."}
+        source_lang: {type: string, required: false, default: hy, example: auto, note: "Language spoken: a code from harmar.speech.languages (59 languages), or \"auto\" to identify it from the audio (94% on 1,258 FLEURS clips). Default hy (Armenian, with Russian/English code-switching kept as spoken, not translated)."}
         translate_to: {type: string, required: false, example: en, note: "Also produce a translated track in this language (any supported code). No surcharge."}
         script_text: {type: string, required: false, note: "Align-only mode: the exact spoken text; only timing is computed. Max 100,000 chars."}
         keep_media: {type: boolean, required: false, default: false, note: "Keep the source so harmar.speech.captions.render can burn captions into it. Otherwise media is deleted as soon as the transcript exists."}
